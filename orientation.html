@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B. Loomis Investments – Orientation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f0c;--panel:#151813;--line:#262b22;--text:#eef1ea;--mute:#a3ab9a;--green:#7dc242;--green-d:#4f8a22;--char:#2d2f31;
+--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);color:var(--text);font:16px/1.6 var(--sans)}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+header{position:sticky;top:0;z-index:5;background:rgba(13,15,12,.94);border-bottom:1px solid var(--line);padding:14px 24px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:1000px;margin:auto}
+.brand{font-family:var(--serif);font-size:18px}.brand b{color:var(--green)}
+#pct{color:var(--mute);font-size:14px}
+.bar{max-width:1000px;margin:10px auto 0;height:6px;background:var(--line);border-radius:6px;overflow:hidden}
+#fill{height:100%;width:0;background:linear-gradient(90deg,var(--green-d),var(--green));transition:width .6s ease}
+.dots{display:flex;gap:8px;max-width:1000px;margin:10px auto 0;flex-wrap:wrap}
+.dots button{background:none;border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:13px;color:var(--mute)}
+.dots button.on{border-color:var(--green);color:var(--text)}
+.dots button.done{color:var(--green)}
+main{max-width:1000px;margin:auto;padding:36px 24px 100px}
+section{display:none}section.show{display:block;animation:in .5s ease}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h1{font-family:var(--serif);font-weight:400;font-size:clamp(34px,6vw,58px);line-height:1.08;margin-bottom:14px}
+h1 em{font-style:normal;color:var(--green)}
+h2{font-family:var(--serif);font-weight:600;font-size:24px;margin:34px 0 12px}
+.lead{color:var(--mute);max-width:62ch;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card h3{font-family:var(--serif);font-size:19px;margin-bottom:6px}
+.card p,.card li{color:var(--mute);font-size:15px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button,.chip{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:14px}
+.tabs button.on{background:var(--green);color:#10200a;border-color:var(--green);font-weight:600}
+.chip{display:inline-block;margin:0 6px 6px 0;padding:4px 12px;color:var(--mute)}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin:22px 0}
+.stat{flex:1;min-width:150px;border-left:3px solid var(--green);padding-left:14px}
+.stat b{font-family:var(--serif);font-size:38px;display:block;line-height:1.1}
+.stat span{color:var(--mute);font-size:14px}
+.acc{border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--panel)}
+.acc button{width:100%;text-align:left;background:none;border:0;padding:13px 16px;font-weight:500;display:flex;justify-content:space-between}
+.acc button::after{content:"+";color:var(--green);transition:transform .25s}
+.acc.open button::after{transform:rotate(45deg)}
+.acc div{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 16px;color:var(--mute);font-size:15px}
+.acc.open div{max-height:340px;padding-bottom:14px}
+.flip{perspective:900px;height:150px;cursor:pointer;border:0;background:none;text-align:left}
+.flip i{display:block;position:relative;height:100%;transition:transform .6s;transform-style:preserve-3d;font-style:normal}
+.flip.on i{transform:rotateY(180deg)}
+.flip i span{position:absolute;inset:0;padding:18px;border-radius:12px;border:1px solid var(--line);backface-visibility:hidden;background:var(--panel)}
+.flip i span:last-child{transform:rotateY(180deg);background:#1b2615;border-color:var(--green-d);font-size:15px;color:var(--text)}
+.flip small{display:block;color:var(--green);font-size:13px;margin-bottom:6px}
+.flip strong{font-family:var(--serif);font-size:20px;font-weight:600}
+.line{position:relative;padding-left:26px;border-left:2px solid var(--line);margin-left:8px}
+.ev{position:relative;margin-bottom:14px}
+.ev button{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 16px;text-align:left;width:100%}
+.ev button::before{content:"";position:absolute;left:-35px;top:18px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--green)}
+.ev.open button::before{background:var(--green)}
+.ev p{max-height:0;overflow:hidden;transition:max-height .4s;color:var(--mute);font-size:15px}
+.ev.open p{max-height:200px;padding-top:8px}
+.pick{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.pick button{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;text-align:left}
+.pick button.on{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.pick small{display:block;color:var(--mute);font-size:12px}
+.paths{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-top:18px}
+.path h3{font-family:var(--serif);font-size:17px;margin-bottom:10px;color:var(--green)}
+.rung{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:14px;position:relative;margin-bottom:22px;opacity:.18;transform:translateX(-10px);transition:all .45s}
+.rung.lit{opacity:1;transform:none;border-color:var(--green-d)}
+.rung:not(:last-child)::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:22px;background:var(--line)}
+.rung.lit:not(:last-child)::after{background:var(--green)}
+.rung:last-child.lit{background:var(--green);color:#10200a;font-weight:600}
+.note{background:#1b2615;border:1px solid var(--green-d);border-radius:10px;padding:14px 16px;font-size:15px;margin:16px 0}
+.btn{background:var(--green);color:#10200a;border:0;border-radius:8px;padding:11px 22px;font-weight:600}
+.btn.ghost{background:none;color:var(--text);border:1px solid var(--line)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.q{margin-bottom:16px}.q p{margin-bottom:8px;font-weight:500}
+.q button{margin:0 8px 8px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 14px}
+.q button.ok{border-color:var(--green);background:#1b2615}.q button.no{border-color:#8a3a2a;opacity:.6}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px}
+.chk input{margin-top:5px;accent-color:var(--green);width:17px;height:17px;flex:none}
+.chk span{color:var(--mute)}
+nav{position:fixed;bottom:0;left:0;right:0;background:rgba(13,15,12,.96);border-top:1px solid var(--line);padding:12px 24px;z-index:5}
+nav div{max-width:1000px;margin:auto;display:flex;justify-content:space-between}
+#done{text-align:center;padding:30px 10px}
+#done .tick{width:70px;height:70px;border-radius:50%;background:var(--green);color:#10200a;display:grid;place-items:center;font-size:36px;margin:0 auto 18px;animation:pop .5s}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+#done ul{text-align:left;max-width:440px;margin:16px auto;color:var(--mute)}
+.chartwrap{overflow-x:auto;padding-bottom:10px}
+.tree{width:max-content;margin:0 auto 50px}
+.troot{display:table;margin:0 auto 14px;border:2px solid var(--green);border-radius:10px;padding:10px 24px;font-family:var(--serif);font-size:18px;background:#1b2615}
+.trow{display:flex;gap:34px;align-items:flex-start;justify-content:center;border-top:2px solid var(--line);padding-top:14px}
+.grp{display:flex;flex-direction:column;align-items:center}
+.ghead{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;font-size:14px;margin-bottom:12px;text-align:center}
+.cols{display:flex;gap:14px;border-top:2px solid var(--line);padding-top:14px}
+.chain{width:172px}.chain.merge{margin-top:6px}
+.clabel{color:var(--green);font-size:13px;font-weight:600;margin-bottom:8px;min-height:38px}
+.tree .rung{opacity:1;transform:none;border-color:var(--line)}
+.tree .rung.dim{opacity:.15;transform:translateX(-10px)}
+.tree .rung.top{background:var(--green);color:#10200a;font-weight:600}
+.tree .rung:not(:last-child)::after{background:var(--green-d)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="top"><div class="brand"><b>B.</b> Loomis Investments · Orientation</div><div id="pct">0% complete</div></div>
+ <div class="bar"><div id="fill"></div></div>
+ <div class="dots" id="dots"></div>
+</header>
+<main>
+
+<section id="s0">
+ <h1>Welcome. We bridge the gap between <em>raw land</em> and realized potential.</h1>
+ <p class="lead">This self-paced session takes 30 to 60 minutes. Tap, flip and explore as you go. Your progress is saved, so you can leave and come back.</p>
+ <div class="stats">
+  <div class="stat"><b data-n="2025">0</b><span>year we were founded</span></div>
+  <div class="stat"><b data-n="24" data-plus="1">0</b><span>states we actively service</span></div>
+  <div class="stat"><b data-n="2">0</b><span>departments, working as one engine</span></div>
+ </div>
+ <h2>Who we are</h2>
+ <div class="grid">
+  <div class="card"><h3>What we are</h3><p>A premier source for builders and clients searching for their next build-ready site, while keeping a private portfolio of long-term holds.</p></div>
+  <div class="card"><h3>Our mission</h3><p>We don’t just buy property. We unlock its maximum value by bridging the gap between raw land and realized potential.</p></div>
+  <div class="card"><h3>How we measure success</h3><p>Continuous growth, more land in inventory, consistently hitting deals, and most importantly, helping our clients.</p></div>
+ </div>
+ <h2>What we do, from sourcing to site prep</h2>
+ <p class="lead">We source off-market vacant lots, fix-and-flips, long-term rentals, demolition opportunities and residential and commercial build lots at a heavily discounted price. Then we handle clearing, surveying, public services and the paperwork that makes a parcel build-ready. Tap any of our 17 services to open it.</p>
+ <div id="svc"></div>
+ <h2>How the puzzle pieces fit</h2>
+ <p class="lead">Each department holds a key piece. Tap a piece to see its part.</p>
+ <div class="pick" id="puz"></div>
+ <div class="note" id="puzTxt">Pick a piece above.</div>
+ <h2>Where we work</h2>
+ <div id="states"></div>
+ <h2>Hours of operation</h2>
+ <div class="grid">
+  <div class="card"><h3>Monday to Thursday</h3><p>7am to 5pm</p></div>
+  <div class="card"><h3>Friday</h3><p>8am to 5pm</p></div>
+  <div class="card"><h3>Saturday</h3><p>9am to 12pm</p></div>
+  <div class="card"><h3>Sunday</h3><p>Closed to clients. Elianna only checks email, signs contracts and preps for the week.</p></div>
+ </div>
+</section>
+
+<section id="s1">
+ <h1>Meet the founder, <em>Elianna Falcon</em></h1>
+ <p class="lead">Founded and funded on her own, no hires, no loans, no sponsors. She has been building since August 2025. Flip each card.</p>
+ <div class="grid" id="flips"></div>
+ <h2>Her path, tap to open</h2>
+ <div class="line" id="tl"></div>
+ <h2>Places she has lived</h2>
+ <div id="lived"></div>
+ <h2>Fun facts</h2>
+ <div class="grid" id="fun"></div>
+ <h2>Quick check</h2>
+ <div id="quiz"></div>
+</section>
+
+<section id="s2">
+ <h1>Your career path <em>has a ladder</em></h1>
+ <p class="lead">Choose your role, then press Climb to watch each step light up. Every track starts with an entry role and ends at a director.</p>
+ <div class="tabs"><button class="on" data-v="vLadder">Role ladders</button><button data-v="vChart">Full hierarchy chart</button></div>
+ <div id="vLadder">
+ <div class="pick" id="roles"></div>
+ <button class="btn" id="climb">Climb the ladder</button>
+ <div class="paths" id="paths"></div>
+ </div>
+ <div id="vChart" hidden>
+  <p class="lead">The whole structure in one view. Scroll sideways on smaller screens. The green boxes are the top of each track.</p>
+  <button class="btn" id="play">Play animation</button>
+  <div class="chartwrap" id="chart" style="margin-top:18px"></div>
+ </div>
+ <div class="note" id="deptNote"><b>Two departments:</b> Land Analysis (remote) sources land, buyers and owners. Site Clearing (field) clears and preps the land, going live mid-December to early January after training in November and December.</div>
+</section>
+
+<section id="s3">
+ <h1>Icebreaker: <em>introduce yourself</em> to the team</h1>
+ <p class="lead">Create a PowerPoint presentation of you. Use Canva, Google Sites, PowerPoint or anything you like, with audio and/or text answers. It can run 2 to 5 minutes if you choose to present. Presenting is optional, but your department can see it.</p>
+ <div class="note">Complete it now or any time before our first monthly team meeting. Upload it to the Google Drive link shared in the updates. At first you will only see yours and your partners’ slides, then every cohort’s once the last one uploads.</div>
+ <h2>Include these, check them off as you plan</h2>
+ <div id="ice"></div>
+</section>
+
+<section id="s4">
+ <div id="docsView">
+  <h1>Last step: <em>your documents</em></h1>
+  <p class="lead">You will receive these through DocuSign. Nothing to sign yet. Here is what is coming.</p>
+  <div id="docs" class="card"></div>
+  <label class="chk" style="margin-top:14px;border:0"><input type="checkbox" id="ack"><span>I understand these will be released and sent out at 9:00am. I understand that I have until Wednesday, October 28th to have these signed via DocuSign.</span></label>
+  <button class="btn" id="finish" disabled>Finish orientation</button>
+ </div>
+ <div id="done" hidden>
+  <div class="tick">✓</div>
+  <h1 style="font-size:36px">Thank you for completing orientation</h1>
+  <p class="lead" style="margin:auto">Completed on <b id="stamp"></b></p>
+  <p style="margin-top:18px"><b>Reminder:</b> sign these in DocuSign by Wednesday, October 28th.</p>
+  <ul id="docs2"></ul>
+ </div>
+</section>
+</main>
+
+<nav><div><button class="btn ghost" id="back">Back</button><button class="btn" id="next">Continue</button></div></nav>
+
+<script>
+/* ===== SET THESE ===== */
+const CONFIG={
+  name:new URLSearchParams(location.search).get('name')||'Audra Surles',
+  role:new URLSearchParams(location.search).get('role')||'Land Sourcing Associate',
+  webhook:'' // paste your Formspree / Google Apps Script URL here to get notified on finish
+};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h)e.innerHTML=h;return e};
+const STEPS=['Company','Founder','Hierarchy','Icebreaker','Documents'];
+let cur=0,reached=0;
+try{const s=JSON.parse(localStorage.getItem('bli-orient')||'{}');cur=s.cur||0;reached=s.reached||0}catch(e){}
+
+/* nav + progress */
+function render(){
+ $$('main>section').forEach((s,i)=>s.classList.toggle('show',i===(cur>=5?4:cur)));
+ reached=Math.max(reached,cur);
+ const pct=Math.round(Math.min(reached,5)/5*100);
+ $('#fill').style.width=pct+'%';$('#pct').textContent=pct+'% complete';
+ $('#dots').innerHTML='';
+ STEPS.forEach((n,i)=>{const b=el('button',(i===cur?'on ':'')+(i<reached?'done':''),(i<reached?'✓ ':'')+n);b.onclick=()=>{cur=i;render()};$('#dots').append(b)});
+ $('#back').style.visibility=cur===0?'hidden':'visible';
+ $('#next').style.display=cur>=4?'none':'';
+ try{localStorage.setItem('bli-orient',JSON.stringify({cur,reached}))}catch(e){}
+ scrollTo({top:0});
+ if(cur===0)countUp();
+}
+$('#next').onclick=()=>{cur++;render()};$('#back').onclick=()=>{cur--;render()};
+
+function countUp(){$$('[data-n]').forEach(e=>{const n=+e.dataset.n,p=e.dataset.plus?'+':'';let t0;const f=t=>{t0=t0||t;const k=Math.min((t-t0)/1200,1);e.textContent=Math.round(n*k)+(k===1?p:'');if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)})}
+
+/* company */
+const SVC=[["Affordable equitable inventory", "We source and secure high-potential real estate at the right price: build-ready parcels acquired at a heavily discounted basis."], ["Property market and value evaluation", "Rigorous comp analysis and market evaluation to confirm every parcel is priced to perform before it ever reaches a buyer."], ["Criteria-based sourcing", "Applying complex search filters across proprietary software and public property registries to identify compliant parcels. Conduct thorough intake consultations with builders to establish clear Buy Box profiles: target geographic boundaries, site metrics, zoning classifications and budget constraints."], ["Preliminary civil and site feasibility", "Evaluate raw land topography and read civil drawings to verify flood zones, identify wetland boundaries, and implement strict Erosion and Sediment Control measures. Review county tax maps, appraiser sites, environmental overlays and zoning codes to ensure sourced lots satisfy basic development parameters."], ["Infrastructure and municipal outreach", "Directly contact utility providers, county appraisers and municipal engineers when necessary to verify sewer, water, power proximity and land restrictions."], ["Data integrity and pipeline tracking", "Every parcel is tracked end to end with disciplined data hygiene, keeping the acquisition pipeline transparent, current and audit-ready."], ["Direct seller engagement", "Initiate direct communication with property owners via outbound phone calls, direct messaging, email campaigns and mailers using skip-traced contact data."], ["Value and price negotiation", "Evaluate comparable market properties (comps) and leverage structured negotiation strategies to secure favorable purchase prices directly with sellers."], ["Contract hand-off", "Real-time signing and logging of seller agreements and deal details to ensure rapid escalation to ownership for contract execution and escrow opening."], ["CRM pipeline maintenance", "Record detailed interaction logs, seller motivations, follow-up timelines and inventory statuses within the central CRM system."], ["Environmental compliance", "Act as the firm’s certified on-site professional to survey, map and legally execute the permitted on-site or off-site relocation of gopher tortoises and protected species under state and federal guidelines."], ["Cross collaboration", "B. Loomis Investments uses its own proof of funds, lawyers and agents to write and review contracts before a property is placed under contract."], ["Precision mechanical land clearing", "Execute high-efficiency clearing of heavily wooded infill lots (2 acres or less). Safely operate skid steers, mulchers, compact excavators and loaders to remove brush, timber and stump obstacles to establish clean, build-ready envelopes."], ["Site preparation and grading support", "Assist with initial site prep, including basic rough grading, soil spreading and pad preparation, coordinated with environmental site leads around protected habitats and marked boundaries."], ["Protected species clearing", "Permitted, compliant clearing around protected habitats, executed to state and federal guidelines."], ["Erosion and runoff prevention", "Implement foundational stormwater protection controls, such as silt fences and construction entrances, to protect adjacent properties and ensure environmental compliance."], ["Full documentation and paperwork", "Complete, organized paperwork hand-off so every deal moves from contract to closing without friction."]];
+SVC.forEach(([t,d])=>{const a=el('div','acc','<button>'+t+'</button><div>'+d+'</div>');a.firstChild.onclick=()=>a.classList.toggle('open');$('#svc').append(a)});
+const PUZ={'Land Analysis Department':'Remote team that sources new clients, buyers and land.','The Founder':'Elianna negotiates the land, provides legal written contracts and proof of funds, and gets every parcel below market value.','Site Clearing Department':'Field team that ties everything up in a nice bow before we hand off to our client.'};
+Object.keys(PUZ).forEach(k=>{const b=el('button','',k);b.onclick=()=>{$$('#puz button').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('#puzTxt').textContent=PUZ[k]};$('#puz').append(b)});
+['California','Arizona','Virginia','West Virginia','Georgia','Maryland','Ohio','North Carolina','South Carolina','Arkansas','Texas','Tennessee','Florida','Indiana','New Mexico','Nevada','Pennsylvania','Michigan','Kansas','Iowa','Washington','New Jersey','New Hampshire','Massachusetts'].forEach(s=>$('#states').append(el('span','chip',s)));
+$('#states').append(el('span','chip','and more to come'));
+
+/* founder */
+[['From','Born in Fayetteville, NC, raised in Florida for a while, then all over because her dad was in the military. She is the middle child.'],
+['Home today','Charlotte, NC, and she goes between NC and FL a lot. She had reservations to move last year but instead chose to invest.'],
+['Education','Bachelor’s in Computer Science, minor in Criminal Justice, Master’s in Ethical Hacking, and plans to achieve a Doctorate in Biomechanical Engineering.'],
+['Schools','Fayetteville State University and NC State University alumni. She started at Wingate University after turning down several scholarships.'],
+['Day job','Software engineer at Wells Fargo for almost four years now. She also launched a small tech business this year.'],
+['Birthday','February 1st. She is 28.']].forEach(([t,b])=>{const f=el('button','flip','<i><span><small>Tap to flip</small><strong>'+t+'</strong></span><span>'+b+'</span></i>');f.onclick=()=>f.classList.toggle('on');$('#flips').append(f)});
+[['How much did the Founder have to spend to begin investing in real estate?','$1,000-That went to programs, software and legal documents from a well-known Florida home developer, Mr. Mineo. No loans, sponsors or help. She went silent and worked the business every day.'],
+['How long did it take for the Founder to see results?','One solid month of learning, then straight into deals. Her deals did not come from the expensive software, but the experience did. Experience creates knowledge and knowledge is power.'],
+['Why did the Founder start investing in Real Estate, preferably land','It was the one field where she could make money with little or no money in. She started literally for free.'],
+['What kind of deals has the Founder done since then?','Vacant land, commercial land, residential communities, fix and flips, demolition builds, data centers, long-term rental holds, hedge funds and more, and still expanding.']].forEach(([t,b])=>{const e=el('div','ev','<button>'+t+'</button><p>'+b+'</p>');e.firstChild.onclick=()=>e.classList.toggle('open');$('#tl').append(e)});
+['North Carolina','South Carolina','Florida','Colorado','Germany','Georgia','Virginia','Ohio'].forEach(s=>$('#lived').append(el('span','chip',s)));
+[['First job at 16','Little Caesars on Ramsey Street. By 20 she had worked in 10 different job fields and held 3 jobs at once during college.'],
+['Hacking since middle school','Before the internet had reliable security. She figured out the inspect element to read source code and expose hidden password fields.'],
+['Eyebrow dancer','Elianna can make her eyebrows dance.']].forEach(([t,b])=>$('#fun').append(el('div','card','<h3>'+t+'</h3><p>'+b+'</p>')));
+[['How much did Elianna start with?',['$1,000','$50,000','A business loan'],0],
+['What was her first job?',['Wells Fargo','Little Caesars','Software startup'],1],
+['Where does she live now?',['Fayetteville, NC','Orlando, FL','Charlotte, NC'],2]].forEach(([q,o,a])=>{
+ const d=el('div','q','<p>'+q+'</p>');o.forEach((t,i)=>{const b=el('button','',t);b.onclick=()=>{d.querySelectorAll('button').forEach(x=>x.className='');b.className=i===a?'ok':'no'};d.append(b)});$('#quiz').append(d)});
+
+/* hierarchy */
+const T=(t,l)=>({t,l});
+const ROLES={
+ 'Land Sourcing Associate':{s:'LSA',tr:[
+  T('Technical and GIS track',['Land Feasibility Specialist','GIS and Mapping Data Analyst','Land Site Assemblage Specialist','Director of Land Intelligence and GIS']),
+  T('Acquisitions track',['Land Transaction Strategist','Land Acquisition','Principal Land Acquisition Lead','Director of Acquisitions Transactions']),
+  T('Fix and flip',['Property Inspection and Scope Associate','Renovation Project Specialist','Construction Project Manager','Director of Residential Redevelopment']),
+  T('Luxury and custom new construction',['Development Administrative and Permit Coordinator','Residential Site and Development Coordinator','Ground-Up Development Manager','Director of Luxury Residential Construction and Development']),
+  T('BRRRR and rental portfolio',['Rental Market and Portfolio Assistant','BRRRR Acquisition and Rehab Analyst','Portfolio Asset and Refinance Specialist','Director of Portfolio Operations and Asset Management'])]},
+ 'Buyer Optimization Associate':{s:'BOA',tr:[
+  T('Lead buyer track',['Lead Buyer Representative','Buyer Acquisition and Relationship','Market Intelligence Analyst','Director of Institutional Dispositions']),
+  T('Builder accounts track',['Builder Accounts Specialist','Builder Relationship Specialist','Market Intelligence Analyst','Director of Institutional Dispositions']),
+  T('Fix and flip',['Property Owner and Inspection Coordinator','Distressed Property Negotiation Specialist','Senior Residential Acquisitions Manager','Director of Seller Acquisitions']),
+  T('Luxury and custom new construction',['Municipal and Contractor Outreach Liaison','Builder Relations Specialist','Senior Builder Partnerships Manager','Director of Builder and Municipal Strategy']),
+  T('BRRRR and rental portfolio',['Owner and Property Management Liaison','Landlord and Portfolio Acquisition Specialist','Senior Portfolio Acquisitions Manager','Director of Portfolio and Landlord Relations'])]},
+ 'Owner Analysis I':{s:'OA-I',tr:[
+  T('Fix and flip',['Owner Analysis I','Owner Analysis II','Senior Off-Market Analytics Director']),
+  T('Luxury and custom new construction',['Owner Analysis I','Owner Analysis III','Senior Off-Market Analytics Director'])]}};
+let role=Object.keys(ROLES).find(k=>k===CONFIG.role)||'Land Sourcing Associate';
+function drawPaths(){
+ $$('#roles button').forEach(b=>b.classList.toggle('on',b.dataset.k===role));
+ $('#paths').innerHTML='';
+ ROLES[role].tr.forEach(p=>{const d=el('div','path','<h3>'+p.t+'</h3>');p.l.forEach(r=>d.append(el('div','rung',r)));$('#paths').append(d)});
+}
+Object.keys(ROLES).forEach(k=>{const b=el('button','',k+'<small>'+ROLES[k].s+'</small>');b.dataset.k=k;b.onclick=()=>{role=k;drawPaths()};$('#roles').append(b)});
+$('#climb').onclick=()=>{drawPaths();const max=Math.max(...ROLES[role].tr.map(p=>p.l.length));
+ for(let i=0;i<max;i++)setTimeout(()=>$$('.path').forEach(p=>{const r=p.querySelectorAll('.rung')[i];if(r)r.classList.add('lit')}),i*700)};
+drawPaths();
+
+/* full hierarchy chart */
+function chain(label,list,top,merge){const c=el('div','chain'+(merge?' merge':''));if(label!==null)c.append(el('div','clabel',label));list.forEach((r,i)=>c.append(el('div','rung'+(top&&i===list.length-1?' top':''),r)));return c}
+function grp(h,cols,merge){const g=el('div','grp');if(h)g.append(el('div','ghead',h));const cs=el('div','cols');cols.forEach(c=>cs.append(chain(c[0],c[1],c[2])));g.append(cs);if(merge)g.append(chain(null,merge,true,true));return g}
+function drawChart(){
+ const ch=$('#chart');ch.innerHTML='';
+ const L=ROLES['Land Sourcing Associate'].tr,B=ROLES['Buyer Optimization Associate'].tr,O=ROLES['Owner Analysis I'].tr;
+ const mk=(title,groups)=>{const t=el('div','tree');t.append(el('div','troot',title));const r=el('div','trow');groups.forEach(g=>r.append(g));t.append(r);ch.append(t)};
+ mk('Land Sourcing Associate (LSA)',[grp('Sourcing & transactions',L.slice(0,2).map(p=>[p.t,p.l,true])),grp('Direct development & assets',L.slice(2).map(p=>[p.t,p.l,true]))]);
+ mk('Buyer Optimization Associate (BOA)',[grp('Senior Buyer Optimization Associate',B.slice(0,2).map(p=>[p.t,p.l.slice(0,2),false]),B[0].l.slice(2)),grp('Direct development & assets',B.slice(2).map(p=>[p.t,p.l,true]))]);
+ mk('Owner Analysis I (OA-I)',[grp('',O.map(p=>[p.t,[p.l[1]],false]),[O[0].l[2]])]);
+}
+let drawn=false;
+$$('.tabs [data-v]').forEach(b=>b.onclick=()=>{
+ $$('.tabs [data-v]').forEach(x=>x.classList.toggle('on',x===b));
+ $('#vLadder').hidden=b.dataset.v!=='vLadder';$('#vChart').hidden=b.dataset.v!=='vChart';
+ if(b.dataset.v==='vChart'&&!drawn){drawChart();drawn=true}
+});
+$('#play').onclick=()=>{
+ $$('#chart .rung').forEach(r=>r.classList.add('dim'));
+ $$('#chart .grp').forEach(g=>{
+  const off=Math.max(...[...g.querySelectorAll('.cols .chain')].map(c=>c.querySelectorAll('.rung').length));
+  g.querySelectorAll('.chain').forEach(c=>{const m=c.classList.contains('merge');
+   c.querySelectorAll('.rung').forEach((r,i)=>setTimeout(()=>r.classList.remove('dim'),((m?off:0)+i)*600+200))})});
+};
+
+/* icebreaker */
+[['Your name','Department and current position title','Region you work in','Birthday (month and day, year is optional)'],
+ ['Where you are from and the state you live in now','Your top three pet peeves','Where you see yourself in 5 years'],
+ ['If you could relive one year, which and why','One state and one country you have always wanted to visit','Two truths and a lie']].flat().forEach(t=>$('#ice').append(el('label','chk','<input type="checkbox"><span>'+t+'</span>')));
+
+/* documents */
+const DOCS=['Employee NDA','Emergency Contact','Land Analysis Department Operating Manual','LSA, BOA JV Commission','Company Equipment','Conflict of Interest','Release of Employment','Request for Background Check'];
+DOCS.forEach(d=>{$('#docs').append(el('div','chk','<span style="color:var(--text)">'+d+'</span>'));$('#docs2').append(el('li','',d))});
+$('#ack').onchange=e=>$('#finish').disabled=!e.target.checked;
+$('#finish').onclick=()=>{
+ const t=new Date(),s=t.toLocaleString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',second:'2-digit'});
+ $('#stamp').textContent=s;$('#docsView').hidden=true;$('#done').hidden=false;
+ cur=5;reached=5;render();$$('main>section')[4].classList.add('show');
+ try{localStorage.setItem('bli-orient-done',s)}catch(e){}
+ if(CONFIG.webhook)fetch(CONFIG.webhook,{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({event:'Orientation completed',name:CONFIG.name,role:CONFIG.role,completedAt:s,iso:t.toISOString()})}).catch(()=>{});
+};
+const prev=localStorage.getItem('bli-orient-done');
+if(prev){$('#stamp').textContent=prev;$('#docsView').hidden=true;$('#done').hidden=false;cur=5}
+render();
+</script>
+</body>
+</html>
