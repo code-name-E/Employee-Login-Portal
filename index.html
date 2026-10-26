@@ -755,6 +755,129 @@
     </div>
 
     <script>
+/* B. Loomis Investments – Orientation tab controller (countdown, early access, confetti, load bar, completion) */
+(function(){
+const OPEN=new Date("October 26, 2026 08:00:00").getTime(), EARLY=OPEN-15*60*1000;
+// Fill these in to get an email when someone finishes (uses the EmailJS account already set up in the portal)
+const EMAILJS={serviceId:'',templateId:'',notifyEmail:''};
+let U,sec,timer,wired=false;
+const K=n=>'bli_orient_'+n+'_'+U.empId;
+const get=n=>{try{return JSON.parse(localStorage.getItem(K(n)))}catch(e){return null}};
+const set=(n,v)=>{try{localStorage.setItem(K(n),JSON.stringify(v))}catch(e){}};
+const $=s=>sec.querySelector(s);
+
+function css(){
+ if(document.getElementById('og-css'))return;
+ const st=document.createElement('style');st.id='og-css';
+ st.textContent=`
+ .og-btn{background:var(--primary-green);color:#fff;border:0;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;cursor:pointer;margin-top:24px;animation:ogp 1.6s infinite}
+ .og-btn:hover{background:var(--dark-green)}
+ @keyframes ogp{0%,100%{box-shadow:0 0 0 0 rgba(46,125,50,.45)}50%{box-shadow:0 0 0 10px rgba(46,125,50,0)}}
+ #og-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10008;display:flex;align-items:center;justify-content:center}
+ .og-card{background:#fff;border-top:5px solid var(--primary-green);border-radius:12px;padding:30px;max-width:520px;width:92%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+ .og-card h3{color:var(--dark-green);font-size:21px;margin-bottom:10px}
+ .og-card p{font-size:14.5px;line-height:1.55;margin-bottom:10px}
+ .og-bar{height:26px;border:2px solid var(--primary-green);border-radius:14px;background:#f1f8e9;overflow:hidden;margin:18px 0 8px;cursor:pointer}
+ .og-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4caf50,var(--primary-green))}
+ .og-hint{font-size:12px;color:var(--text-muted)}
+ #og-confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:10010}
+ .og-prog{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:13px;font-weight:700;color:var(--dark-green)}
+ .og-prog div{flex:1;height:10px;background:#e8f5e9;border-radius:6px;overflow:hidden}
+ .og-prog i{display:block;height:100%;background:var(--primary-green);transition:width .5s}
+ .og-frame{width:100%;height:calc(100vh - 190px);min-height:600px;border:1px solid #e0e0e0;border-radius:10px;background:#0d0f0c}
+ .og-done{text-align:center;max-width:620px;margin:0 auto;padding:10px}
+ .og-done .tick{width:70px;height:70px;border-radius:50%;background:var(--primary-green);color:#fff;font-size:36px;display:grid;place-items:center;margin:0 auto 14px}
+ .og-done ul{text-align:left;display:inline-block;font-size:13px;color:var(--text-muted);margin:10px 0}
+ .og-badge{margin-left:auto;font-size:11px;background:var(--primary-green);color:#fff;border-radius:10px;padding:1px 8px}`;
+ document.head.appendChild(st);
+}
+function badge(){
+ const n=document.querySelector('.nav-item[onclick*="orientation-tab"]');if(!n)return;
+ let b=n.querySelector('.og-badge');const p=get('pct')||0;
+ if(!p&&!get('done')){if(b)b.remove();return}
+ if(!b){b=document.createElement('span');b.className='og-badge';n.appendChild(b)}
+ b.textContent=get('done')?'✓ 100%':p+'%';
+}
+function head(){return '<div class="section-header"><h1>Orientation Portal</h1><p>Self-paced onboarding orientation session.</p></div>'}
+function render(){
+ const done=get('done');
+ if(done){
+  sec.innerHTML=head()+`<div class="card"><div class="og-done"><div class="tick">✓</div>
+   <h3 style="color:var(--dark-green);font-size:22px">Orientation complete</h3>
+   <div class="og-prog" style="margin-top:14px"><span>100%</span><div><i style="width:100%"></i></div></div>
+   <p style="font-size:13px;color:var(--text-muted)">Completed on <strong>${done.at}</strong></p>
+   <p style="margin-top:14px;font-size:14px"><strong>Reminder:</strong> sign these in DocuSign by Wednesday, October 28th.</p>
+   <ul><li>Employee NDA</li><li>Emergency Contact</li><li>Land Analysis Department Operating Manual</li><li>LSA, BOA JV Commission</li><li>Company Equipment</li><li>Conflict of Interest</li><li>Release of Employment</li><li>Request for Background Check</li></ul></div></div>`;
+  return;
+ }
+ if(get('started')){
+  const p=get('pct')||0,q=new URLSearchParams({name:U.name,role:U.role}).toString();
+  sec.innerHTML=head()+`<div class="og-prog"><span id="og-pct">${p}%</span><div><i id="og-fill" style="width:${p}%"></i></div></div><iframe class="og-frame" src="orientation.html?${q}" title="Orientation"></iframe>`;
+  return;
+ }
+ sec.innerHTML=head()+`<div class="card"><div class="orientation-card-wrapper">
+  <i class="fa-solid fa-compass"></i>
+  <h3 style="color:var(--dark-green);font-size:22px;margin-bottom:15px">Self-Paced Orientation Session</h3>
+  <div class="orientation-locked-banner" id="og-banner"></div>
+  <p style="font-size:14px;color:var(--text-muted);margin-bottom:25px;font-weight:600" id="og-cdlabel">Countdown to Orientation Access:</p>
+  <div class="countdown-grid">${['Days','Hours','Minutes','Seconds'].map((l,i)=>`<div class="countdown-box-item"><div class="countdown-number" id="og-c${i}">--</div><div class="countdown-label">${l}</div></div>`).join('')}</div>
+  <div id="og-action"></div></div></div>`;
+ tick();
+}
+function tick(){
+ if(!$('#og-banner'))return;
+ const now=Date.now(),d=Math.max(0,OPEN-now),v=[Math.floor(d/864e5),Math.floor(d%864e5/36e5),Math.floor(d%36e5/6e4),Math.floor(d%6e4/1e3)];
+ v.forEach((x,i)=>$('#og-c'+i).textContent=String(x).padStart(2,'0'));
+ const b=$('#og-banner'),a=$('#og-action');
+ if(now<EARLY){b.innerHTML='<i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 26th at 8:00 AM.';a.innerHTML='';return}
+ b.style.cssText='background:#e8f5e9;color:#1b5e20;border-color:#c8e6c9';
+ b.innerHTML='<i class="fa-solid fa-lock-open"></i> '+(now<OPEN?'Early access is open. Orientation officially begins at 8:00 AM.':'Orientation is open. Begin whenever you are ready.');
+ if(now>=OPEN)$('#og-cdlabel').style.display='none';
+ const txt=now<OPEN?'Access Orientation Early':'Begin Orientation';
+ if(!a.firstChild){const btn=document.createElement('button');btn.className='og-btn';btn.onclick=start;a.appendChild(btn)}
+ if(a.firstChild.textContent!==txt)a.firstChild.textContent=txt;
+}
+function confetti(){
+ const c=document.createElement('canvas');c.id='og-confetti';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);
+ const x=c.getContext('2d'),cols=['#2e7d32','#7dc242','#c8e6c9','#fbc02d','#ffffff','#1b5e20'];
+ const P=Array.from({length:180},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*18,vy:-Math.random()*16-4,w:6+Math.random()*6,h:4+Math.random()*5,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.random()*cols.length|0]}));
+ let t0;(function f(t){t0=t0||t;const e=t-t0;x.clearRect(0,0,c.width,c.height);
+  P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-e/4200);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});
+  e<4200?requestAnimationFrame(f):c.remove()})(0);
+}
+function start(){
+ confetti();
+ const m=document.createElement('div');m.id='og-modal';
+ m.innerHTML=`<div class="og-card"><h3>Good Morning ${U.name}</h3>
+  <p>Congratulations on joining the team! We are excited to have you onboard and are ready to get this going.</p>
+  <p>Thank you for your patience. If you’re ready to begin Orientation, hover over the bar below.</p>
+  <div class="og-bar" tabindex="0" role="progressbar" aria-label="Hover to begin orientation"><i></i></div>
+  <div class="og-hint">Hover over the bar to load Orientation (on a touchscreen, press and hold)</div></div>`;
+ document.body.appendChild(m);
+ const bar=m.querySelector('.og-bar'),fill=bar.firstChild;let p=0,raf,last;
+ const step=t=>{last=last||t;p=Math.min(100,p+(t-last)/25);last=t;fill.style.width=p+'%';
+  if(p>=100){m.remove();set('started',true);render();return}raf=requestAnimationFrame(step)};
+ const go=()=>{cancelAnimationFrame(raf);last=0;raf=requestAnimationFrame(step)},stop=()=>cancelAnimationFrame(raf);
+ bar.onmouseenter=go;bar.onmouseleave=stop;bar.onfocus=go;bar.onblur=stop;
+ bar.ontouchstart=e=>{e.preventDefault();go()};bar.ontouchend=stop;
+}
+function onMsg(e){
+ if(e.origin!==location.origin||!e.data||!U)return;const d=e.data;
+ if(d.type==='orientation-progress'&&!get('done')){set('pct',d.pct);badge();const f=document.getElementById('og-fill');if(f){f.style.width=d.pct+'%';document.getElementById('og-pct').textContent=d.pct+'%'}}
+ if(d.type==='orientation-complete'&&!get('done')){
+  set('done',{at:d.completedAt});set('pct',100);badge();render();
+  if(EMAILJS.serviceId&&window.emailjs)emailjs.send(EMAILJS.serviceId,EMAILJS.templateId,{to_email:EMAILJS.notifyEmail,employee_name:U.name,employee_role:U.role,employee_id:U.empId,completed_at:d.completedAt}).catch(()=>{});
+ }
+}
+window.initOrientation=function(user){
+ U=user;sec=document.getElementById('orientation-tab');if(!sec)return;
+ css();badge();render();clearInterval(timer);timer=setInterval(tick,1000);
+ if(!wired){addEventListener('message',onMsg);wired=true}
+};
+})();
+
+    </script>
+    <script>
         let currentUserRole = null; // 'audra' or 'quandreas'
 
         const usersData = {
@@ -839,8 +962,7 @@
             }
 
             if (currentUserRole === 'audra') {
-                setInterval(updateOrientationCountdown, 1000);
-                updateOrientationCountdown();
+                if (typeof initOrientation === 'function') initOrientation(usersData.audra);
                 renderEquipmentChecklist();
                 renderSavedNotes();
             } else {
@@ -1258,28 +1380,7 @@
                     </section>
 
                     <!-- 7. ORIENTATION TAB -->
-                    <section id="orientation-tab" class="tab-section">
-                        <div class="section-header">
-                            <h1>Orientation Portal</h1>
-                            <p>Self-paced onboarding orientation session.</p>
-                        </div>
-                        <div class="card">
-                            <div class="orientation-card-wrapper">
-                                <i class="fa-solid fa-compass"></i>
-                                <h3 style="color: var(--dark-green); font-size: 22px; margin-bottom: 15px;">Self-Paced Orientation Session</h3>
-                                <div class="orientation-locked-banner">
-                                    <i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 26th at 8:00 AM.
-                                </div>
-                                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; font-weight: 600;">Countdown to Orientation Access:</p>
-                                <div class="countdown-grid">
-                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-days">--</div><div class="countdown-label">Days</div></div>
-                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-hours">--</div><div class="countdown-label">Hours</div></div>
-                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-mins">--</div><div class="countdown-label">Minutes</div></div>
-                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-secs">--</div><div class="countdown-label">Seconds</div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+                    <section id="orientation-tab" class="tab-section"></section>
 
                     <!-- 8. SAVED NOTES SECTION -->
                     <section id="saved-notes-tab" class="tab-section">
