@@ -956,6 +956,17 @@
                             <div class="card">
                                 <h3 style="font-size: 16px; margin-bottom: 15px; color: var(--dark-green);"><i class="fa-solid fa-rss"></i> Recent Department Updates</h3>
                                 <div id="live-feed-list">
+                                  <div class="feed-post">
+                                    <div class="post-header">
+                                      <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
+                                      <span class="post-date">Oct 26, 2026</span>
+                                    </div>
+                                    <div class="post-body">
+                                      <p>Good Morning Everyone! <br><strong>HAPPY MONDAY and HAPPY ORIENTATION DAY!!</strong></p>
+                                      <p>Orientation will unlock at <strong>7:30am.</strong>. Tasks and Checklist unlock at <strong>8:00am.</strong></p>
+                                      <p>Note: You do not have to <em>begin at 7:30am.</em></p>
+                                    </div>
+                                  </div>
                                    <div class="feed-post">
                                     <div class="post-header">
                                       <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
@@ -1257,7 +1268,7 @@
                                 <i class="fa-solid fa-compass"></i>
                                 <h3 style="color: var(--dark-green); font-size: 22px; margin-bottom: 15px;">Self-Paced Orientation Session</h3>
                                 <div class="orientation-locked-banner">
-                                    <i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 26th at 6:00 AM.
+                                    <i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 26th at 7:30 AM.
                                 </div>
                                 <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; font-weight: 600;">Countdown to Orientation Access:</p>
                                 <div class="countdown-grid">
@@ -1634,7 +1645,7 @@
 
         // COUNTDOWN TIMER LOGIC FOR AUDRA'S ORIENTATION
         function updateOrientationCountdown() {
-            const targetDate = new Date("October 26, 2026 06:00:00").getTime();
+            const targetDate = new Date("October 26, 2026 07:45:00").getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
 
