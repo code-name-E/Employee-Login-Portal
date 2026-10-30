@@ -60,7 +60,7 @@
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 440px;
             text-align: center;
             border: 1px solid #e0e0e0;
         }
@@ -97,9 +97,15 @@
             background: var(--dark-green);
         }
         #login-error {
-            color: #d32f2f;
+            color: #856404;
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 12px;
+            border-radius: 6px;
             font-size: 13px;
-            margin-top: 10px;
+            line-height: 1.4;
+            text-align: left;
+            margin-top: 15px;
             display: none;
         }
 
@@ -694,10 +700,10 @@
         <div class="login-card">
             <img src="1nobg.png" alt="B. Loomis Investments LLC">
             <h2>Employee Portal Login</h2>
-            <input type="text" id="login-username" placeholder="Employee Name">
-            <input type="password" id="login-password" placeholder="Password">
+            <input type="text" id="login-username" placeholder="Employee Name / ID">
+            <input type="password" id="login-password" placeholder="Passcode">
             <button type="button" onclick="handleLogin()">Login to Dashboard</button>
-            <div id="login-error">Invalid credentials. Please try again.</div>
+            <div id="login-error"></div>
         </div>
     </div>
 
@@ -755,129 +761,6 @@
     </div>
 
     <script>
-/* B. Loomis Investments – Orientation tab controller (countdown, early access, confetti, load bar, completion) */
-(function(){
-const OPEN=new Date("October 26, 2026 08:00:00").getTime(), EARLY=OPEN-15*60*1000;
-// Fill these in to get an email when someone finishes (uses the EmailJS account already set up in the portal)
-const EMAILJS={serviceId:'',templateId:'',notifyEmail:''};
-let U,sec,timer,wired=false;
-const K=n=>'bli_orient_'+n+'_'+U.empId;
-const get=n=>{try{return JSON.parse(localStorage.getItem(K(n)))}catch(e){return null}};
-const set=(n,v)=>{try{localStorage.setItem(K(n),JSON.stringify(v))}catch(e){}};
-const $=s=>sec.querySelector(s);
-
-function css(){
- if(document.getElementById('og-css'))return;
- const st=document.createElement('style');st.id='og-css';
- st.textContent=`
- .og-btn{background:var(--primary-green);color:#fff;border:0;border-radius:8px;padding:13px 28px;font-weight:700;font-size:15px;cursor:pointer;margin-top:24px;animation:ogp 1.6s infinite}
- .og-btn:hover{background:var(--dark-green)}
- @keyframes ogp{0%,100%{box-shadow:0 0 0 0 rgba(46,125,50,.45)}50%{box-shadow:0 0 0 10px rgba(46,125,50,0)}}
- #og-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10008;display:flex;align-items:center;justify-content:center}
- .og-card{background:#fff;border-top:5px solid var(--primary-green);border-radius:12px;padding:30px;max-width:520px;width:92%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25)}
- .og-card h3{color:var(--dark-green);font-size:21px;margin-bottom:10px}
- .og-card p{font-size:14.5px;line-height:1.55;margin-bottom:10px}
- .og-bar{height:26px;border:2px solid var(--primary-green);border-radius:14px;background:#f1f8e9;overflow:hidden;margin:18px 0 8px;cursor:pointer}
- .og-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4caf50,var(--primary-green))}
- .og-hint{font-size:12px;color:var(--text-muted)}
- #og-confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:10010}
- .og-prog{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:13px;font-weight:700;color:var(--dark-green)}
- .og-prog div{flex:1;height:10px;background:#e8f5e9;border-radius:6px;overflow:hidden}
- .og-prog i{display:block;height:100%;background:var(--primary-green);transition:width .5s}
- .og-frame{width:100%;height:calc(100vh - 190px);min-height:600px;border:1px solid #e0e0e0;border-radius:10px;background:#0d0f0c}
- .og-done{text-align:center;max-width:620px;margin:0 auto;padding:10px}
- .og-done .tick{width:70px;height:70px;border-radius:50%;background:var(--primary-green);color:#fff;font-size:36px;display:grid;place-items:center;margin:0 auto 14px}
- .og-done ul{text-align:left;display:inline-block;font-size:13px;color:var(--text-muted);margin:10px 0}
- .og-badge{margin-left:auto;font-size:11px;background:var(--primary-green);color:#fff;border-radius:10px;padding:1px 8px}`;
- document.head.appendChild(st);
-}
-function badge(){
- const n=document.querySelector('.nav-item[onclick*="orientation-tab"]');if(!n)return;
- let b=n.querySelector('.og-badge');const p=get('pct')||0;
- if(!p&&!get('done')){if(b)b.remove();return}
- if(!b){b=document.createElement('span');b.className='og-badge';n.appendChild(b)}
- b.textContent=get('done')?'✓ 100%':p+'%';
-}
-function head(){return '<div class="section-header"><h1>Orientation Portal</h1><p>Self-paced onboarding orientation session.</p></div>'}
-function render(){
- const done=get('done');
- if(done){
-  sec.innerHTML=head()+`<div class="card"><div class="og-done"><div class="tick">✓</div>
-   <h3 style="color:var(--dark-green);font-size:22px">Orientation complete</h3>
-   <div class="og-prog" style="margin-top:14px"><span>100%</span><div><i style="width:100%"></i></div></div>
-   <p style="font-size:13px;color:var(--text-muted)">Completed on <strong>${done.at}</strong></p>
-   <p style="margin-top:14px;font-size:14px"><strong>Reminder:</strong> sign these in DocuSign by Wednesday, October 28th.</p>
-   <ul><li>Employee NDA</li><li>Emergency Contact</li><li>Land Analysis Department Operating Manual</li><li>LSA, BOA JV Commission</li><li>Company Equipment</li><li>Conflict of Interest</li><li>Release of Employment</li><li>Request for Background Check</li></ul></div></div>`;
-  return;
- }
- if(get('started')){
-  const p=get('pct')||0,q=new URLSearchParams({name:U.name,role:U.role}).toString();
-  sec.innerHTML=head()+`<div class="og-prog"><span id="og-pct">${p}%</span><div><i id="og-fill" style="width:${p}%"></i></div></div><iframe class="og-frame" src="orientation.html?${q}" title="Orientation"></iframe>`;
-  return;
- }
- sec.innerHTML=head()+`<div class="card"><div class="orientation-card-wrapper">
-  <i class="fa-solid fa-compass"></i>
-  <h3 style="color:var(--dark-green);font-size:22px;margin-bottom:15px">Self-Paced Orientation Session</h3>
-  <div class="orientation-locked-banner" id="og-banner"></div>
-  <p style="font-size:14px;color:var(--text-muted);margin-bottom:25px;font-weight:600" id="og-cdlabel">Countdown to Orientation Access:</p>
-  <div class="countdown-grid">${['Days','Hours','Minutes','Seconds'].map((l,i)=>`<div class="countdown-box-item"><div class="countdown-number" id="og-c${i}">--</div><div class="countdown-label">${l}</div></div>`).join('')}</div>
-  <div id="og-action"></div></div></div>`;
- tick();
-}
-function tick(){
- if(!$('#og-banner'))return;
- const now=Date.now(),d=Math.max(0,OPEN-now),v=[Math.floor(d/864e5),Math.floor(d%864e5/36e5),Math.floor(d%36e5/6e4),Math.floor(d%6e4/1e3)];
- v.forEach((x,i)=>$('#og-c'+i).textContent=String(x).padStart(2,'0'));
- const b=$('#og-banner'),a=$('#og-action');
- if(now<EARLY){b.innerHTML='<i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 26th at 8:00 AM.';a.innerHTML='';return}
- b.style.cssText='background:#e8f5e9;color:#1b5e20;border-color:#c8e6c9';
- b.innerHTML='<i class="fa-solid fa-lock-open"></i> '+(now<OPEN?'Early access is open. Orientation officially begins at 8:00 AM.':'Orientation is open. Begin whenever you are ready.');
- if(now>=OPEN)$('#og-cdlabel').style.display='none';
- const txt=now<OPEN?'Access Orientation Early':'Begin Orientation';
- if(!a.firstChild){const btn=document.createElement('button');btn.className='og-btn';btn.onclick=start;a.appendChild(btn)}
- if(a.firstChild.textContent!==txt)a.firstChild.textContent=txt;
-}
-function confetti(){
- const c=document.createElement('canvas');c.id='og-confetti';c.width=innerWidth;c.height=innerHeight;document.body.appendChild(c);
- const x=c.getContext('2d'),cols=['#2e7d32','#7dc242','#c8e6c9','#fbc02d','#ffffff','#1b5e20'];
- const P=Array.from({length:180},()=>({x:innerWidth/2,y:innerHeight*.45,vx:(Math.random()-.5)*18,vy:-Math.random()*16-4,w:6+Math.random()*6,h:4+Math.random()*5,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.random()*cols.length|0]}));
- let t0;(function f(t){t0=t0||t;const e=t-t0;x.clearRect(0,0,c.width,c.height);
-  P.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;x.save();x.globalAlpha=Math.max(0,1-e/4200);x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.fillRect(-p.w/2,-p.h/2,p.w,p.h);x.restore()});
-  e<4200?requestAnimationFrame(f):c.remove()})(0);
-}
-function start(){
- confetti();
- const m=document.createElement('div');m.id='og-modal';
- m.innerHTML=`<div class="og-card"><h3>Good Morning ${U.name}</h3>
-  <p>Congratulations on joining the team! We are excited to have you onboard and are ready to get this going.</p>
-  <p>Thank you for your patience. If you’re ready to begin Orientation, hover over the bar below.</p>
-  <div class="og-bar" tabindex="0" role="progressbar" aria-label="Hover to begin orientation"><i></i></div>
-  <div class="og-hint">Hover over the bar to load Orientation (on a touchscreen, press and hold)</div></div>`;
- document.body.appendChild(m);
- const bar=m.querySelector('.og-bar'),fill=bar.firstChild;let p=0,raf,last;
- const step=t=>{last=last||t;p=Math.min(100,p+(t-last)/25);last=t;fill.style.width=p+'%';
-  if(p>=100){m.remove();set('started',true);render();return}raf=requestAnimationFrame(step)};
- const go=()=>{cancelAnimationFrame(raf);last=0;raf=requestAnimationFrame(step)},stop=()=>cancelAnimationFrame(raf);
- bar.onmouseenter=go;bar.onmouseleave=stop;bar.onfocus=go;bar.onblur=stop;
- bar.ontouchstart=e=>{e.preventDefault();go()};bar.ontouchend=stop;
-}
-function onMsg(e){
- if(e.origin!==location.origin||!e.data||!U)return;const d=e.data;
- if(d.type==='orientation-progress'&&!get('done')){set('pct',d.pct);badge();const f=document.getElementById('og-fill');if(f){f.style.width=d.pct+'%';document.getElementById('og-pct').textContent=d.pct+'%'}}
- if(d.type==='orientation-complete'&&!get('done')){
-  set('done',{at:d.completedAt});set('pct',100);badge();render();
-  if(EMAILJS.serviceId&&window.emailjs)emailjs.send(EMAILJS.serviceId,EMAILJS.templateId,{to_email:EMAILJS.notifyEmail,employee_name:U.name,employee_role:U.role,employee_id:U.empId,completed_at:d.completedAt}).catch(()=>{});
- }
-}
-window.initOrientation=function(user){
- U=user;sec=document.getElementById('orientation-tab');if(!sec)return;
- css();badge();render();clearInterval(timer);timer=setInterval(tick,1000);
- if(!wired){addEventListener('message',onMsg);wired=true}
-};
-})();
-
-    </script>
-    <script>
         let currentUserRole = null; // 'audra' or 'quandreas'
 
         const usersData = {
@@ -924,21 +807,11 @@ window.initOrientation=function(user){
             "Adidas Embroidery Defender Backpack"
         ];
 
-        // LOGIN HANDLER
+        // LOGIN HANDLER (LOCKED FOR MAINTENANCE / UAT DEPLOYMENT TODAY)
         function handleLogin() {
-            const userVal = document.getElementById("login-username").value.trim().toLowerCase();
-            const passVal = document.getElementById("login-password").value.trim();
             const errorDiv = document.getElementById("login-error");
-
-            if ((userVal === "audra surles" || userVal === "bli0842ans" || userVal === "audra") && passVal === usersData.audra.passcode) {
-                currentUserRole = 'audra';
-                initPortal();
-            } else if ((userVal === "quandreas surles" || userVal === "lc-01226sc" || userVal === "quandreas") && passVal === usersData.quandreas.passcode) {
-                currentUserRole = 'quandreas';
-                initPortal();
-            } else {
-                errorDiv.style.display = "block";
-            }
+            errorDiv.innerHTML = "⚠️ System Notice: DEV | SIT ENV. PASSED TESTING. Deployment is now in UAT, if tests are success will move to PROD which will push all the new changes. To protect user data and ensure stability, new logins are temporarily paused. This page will automatically refresh as soon as the deployment is complete.";
+            errorDiv.style.display = "block";
         }
 
         function initPortal() {
@@ -962,7 +835,8 @@ window.initOrientation=function(user){
             }
 
             if (currentUserRole === 'audra') {
-                if (typeof initOrientation === 'function') initOrientation(usersData.audra);
+                setInterval(updateOrientationCountdown, 1000);
+                updateOrientationCountdown();
                 renderEquipmentChecklist();
                 renderSavedNotes();
             } else {
@@ -1078,58 +952,6 @@ window.initOrientation=function(user){
                             <div class="card">
                                 <h3 style="font-size: 16px; margin-bottom: 15px; color: var(--dark-green);"><i class="fa-solid fa-rss"></i> Recent Department Updates</h3>
                                 <div id="live-feed-list">
-                                <div class="feed-post">
-                                    <div class="post-header">
-                                      <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
-                                      <span class="post-date">Oct 26, 2026</span>
-                                    </div>
-                                    <div class="post-body">
-                                      <p>If you did <strong>not</strong></p> receive your $25 Visa Gift Card, please let me know ASAP. I know there were issues earlier with some receiving that email and then it eventually came, so just check your spam too.</p>
-                                      <p>Documents were suppose to be sent an envelopes by DocuSign but I checked and none of them have sent. I am locking up and heading home right now so please give me some time to send using a different signing software. 
-                                      <em>The Documents are not due until Wednesday so please take your time going through them.</em>
-                                      <p>The Equipment contract has the dates of when you will be receiving Equipment. I switched out several equipment items that would not get here on time and/or wasn't required for level of work and switched out partners one last time.</p>
-                                      <p>Please let me know if you have any further questions, all questions will be answered here shortly. Thank you all.</p>
-                                    </div>
-                                  </div>
-                                <div class="feed-post">
-                                    <div class="post-header">
-                                      <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
-                                      <span class="post-date">Oct 26, 2026</span>
-                                    </div>
-                                    <div class="post-body">
-                                      <p><strong>HAPPY ORIENTATION DAY!!</strong></p>
-                                      <p>The Orientation was unlocked at <strong>7:45am.</strong>. Tasks and Checklist unlock later on today edits so you can make your own tasks if you'd like.</p>
-                                      <p>Important notes to remember: <br>
-                                      The Orientation portal will be open today from 8:00am - 6:00pm. <br> 
-                                      A $25 Visa Gift Card will automatically be delievered to your email on file at the end of Orientation day, 6:00pm. <br>
-                                      W-2 and I-9 documentations will be self-completed through ADP, those links will be sent to you via email. <br>
-                                      Legal documents that require DocuSign signatures will be coming from Eliannaf.ef@gmail.com for now, <em>hr@bloomisinvestments.com</em> is being fixed on as it is not properly receiving incoming emails. <br>
-                                      Benefits enrollment begins after training is concluded, you are live, and are out of probation period {benefits information will be discussed on the first training day}. <br>
-                                      DocuSign documents will be sent out after 5:00pm. <strong> Please note: </strong> All HR Record and Compliance/Legal Documents need to be signed by 6:00pm October 28th. <br>
-                                      </p>
-                                    </div>
-                                  </div>
-                                  <div class="feed-post">
-                                    <div class="post-header">
-                                      <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
-                                      <span class="post-date">Oct 26, 2026</span>
-                                    </div>
-                                    <div class="post-body">
-                                      <p>Good Morning Everyone! <br><strong>HAPPY MONDAY and HAPPY ORIENTATION DAY!!</strong></p>
-                                      <p>Orientation will unlock at <strong>8:00am.</strong>. Tasks and Checklist unlock at <strong>8:30am.</strong></p>
-                                      <p>Note: You do not have to <em>begin at 8:00am.</em></p>
-                                    </div>
-                                  </div>
-                                   <div class="feed-post">
-                                    <div class="post-header">
-                                      <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
-                                      <span class="post-date">Oct 24, 2026</span>
-                                    </div>
-                                    <div class="post-body">
-                                      <p>We don't work on the weekends and I really don't want to make you all go through contracts and do work today lol nor do I, especially on a Sunday.</p>
-                                      <strong>Enjoy this beautiful Lord's Day and we can let Monday start us off strong with Orientation!</strong> <em>Orientation will automatically unlock at 6:00am.</em>
-                                    </div>
-                                  </div>
                                   <div class="feed-post">
                                     <div class="post-header">
                                       <span class="post-author">Elianna Falcon (Founder & Managing Director)</span>
@@ -1266,7 +1088,7 @@ window.initOrientation=function(user){
                         </div>
                     </section>
 
-                    <!-- 2. EMPLOYEE DETAILS SECTION (MATCHING ATTACHMENT 1 EXACTLY) -->
+                    <!-- 2. EMPLOYEE DETAILS SECTION -->
                     <section id="employee-details-tab" class="tab-section">
                         <div class="section-header">
                             <h1>Employee Details</h1>
@@ -1312,7 +1134,7 @@ window.initOrientation=function(user){
                     <section id="equipment-tab" class="tab-section">
                         <div class="section-header">
                             <h1>Equipment & Welcome Package Shipment</h1>
-                            <p>Verify arrival of your work hardware and welcome kit items when you receive your <strong>confirmation #.</strong></p>
+                            <p>Verify arrival of your work hardware and welcome kit items.</p>
                         </div>
                         <div class="card">
                             <h3 style="font-size: 16px; color: var(--dark-green); margin-bottom: 15px;"><i class="fa-solid fa-boxes-packing"></i> Equipment Delivery Receipt Verification</h3>
@@ -1358,20 +1180,20 @@ window.initOrientation=function(user){
                                     <tr><td><strong>Inquiry Form</strong></td><td>HR Record</td><td>Sept 28, 2026</td><td><span class="doc-badge">Completed</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
                                     <tr><td><strong>Employee PS</strong></td><td>HR Record</td><td>Sept 28, 2026</td><td><span class="doc-badge">Completed</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
                                     <tr><td><strong>Onboarding Selection</strong></td><td>HR Record</td><td>Sept 28, 2026</td><td><span class="doc-badge">Completed</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
-                                    <tr><td><strong>Company Equipment</strong></td><td>HR Record</td><td>Oct 24, 2026 </td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
-                                    <tr><td><strong>Emergency Contact</strong></td><td>HR Record</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
-                                    <tr><td><strong>Background Check Request</strong></td><td>Compliance / Legal</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
-                                    <tr><td><strong>Conflict of Interest</strong></td><td>Compliance / Legal</td><td>Oct, 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
-                                    <tr><td><strong>Employee NDA</strong></td><td>Compliance / Legal</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
-                                    <tr><td><strong>Land Analysis Department Operating Manual</strong></td><td>Compliance / Legal</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
-                                    <tr><td><strong>JV Agreement Between LSA and BOA</strong></td><td>Compliance / Legal</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
-                                    <tr><td><strong>Release of Employment</strong></td><td>Compliance / Legal</td><td>Oct 24, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>Company Equipment</strong></td><td>HR Record</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
+                                    <tr><td><strong>Emergency Contact</strong></td><td>HR Record</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">View Record</a></td></tr>
+                                    <tr><td><strong>Background Check Request</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>Conflict of Interest</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>Employee NDA</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>Land Analysis Department Operating Manual</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>JV Agreement Between LSA and BOA</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
+                                    <tr><td><strong>Release of Employment</strong></td><td>Compliance / Legal</td><td>Oct, 26, 2026</td><td><span class="doc-badge" style="background:#fff3cd; color:#856404;">Not In Progress</span></td><td><a href="#" style="color: var(--primary-green);">Download PDF</a></td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </section>
 
-                    <!-- 5. TASKS & CHECKLIST SECTION (LOCKED FOR AUDRA) -->
+                    <!-- 5. TASKS & CHECKLIST SECTION -->
                     <section id="todo-tab" class="tab-section">
                         <div class="section-header">
                             <h1>Tasks & Checklist</h1>
@@ -1384,7 +1206,7 @@ window.initOrientation=function(user){
                             <div class="checklist-item completed"><label><input type="checkbox" checked disabled> Complete Onboarding Portal Selection & Training Dates</label></div>
                             <div class="checklist-item"><label><input type="checkbox"> Complete and Sign Employee NDA & Legal Agreements</label></div>
                             <div class="checklist-item"><label><input type="checkbox"> Inspect and Submit Equipment Delivery Verification Receipt</label></div>
-                            <div class="checklist-item"><label><input type="checkbox"> Complete Self-Paced Orientation Session (Oct 26th)</label></div>
+                            <div class="checklist-item"><label><input type="checkbox"> Complete Self-Paced Orientation Session (Oct 25th)</label></div>
                             <div class="checklist-item"><label><input type="checkbox"> Submit Direct Deposit / Payroll Form (ADP / Workday Setup)</label></div>
                         </div>
                     </section>
@@ -1411,7 +1233,28 @@ window.initOrientation=function(user){
                     </section>
 
                     <!-- 7. ORIENTATION TAB -->
-                    <section id="orientation-tab" class="tab-section"></section>
+                    <section id="orientation-tab" class="tab-section">
+                        <div class="section-header">
+                            <h1>Orientation Portal</h1>
+                            <p>Self-paced onboarding orientation session.</p>
+                        </div>
+                        <div class="card">
+                            <div class="orientation-card-wrapper">
+                                <i class="fa-solid fa-compass"></i>
+                                <h3 style="color: var(--dark-green); font-size: 22px; margin-bottom: 15px;">Self-Paced Orientation Session</h3>
+                                <div class="orientation-locked-banner">
+                                    <i class="fa-solid fa-lock"></i> It is locked until Orientation begins on October 25th at 6:00 AM.
+                                </div>
+                                <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 25px; font-weight: 600;">Countdown to Orientation Access:</p>
+                                <div class="countdown-grid">
+                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-days">--</div><div class="countdown-label">Days</div></div>
+                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-hours">--</div><div class="countdown-label">Hours</div></div>
+                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-mins">--</div><div class="countdown-label">Minutes</div></div>
+                                    <div class="countdown-box-item"><div class="countdown-number" id="cd-secs">--</div><div class="countdown-label">Seconds</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
                     <!-- 8. SAVED NOTES SECTION -->
                     <section id="saved-notes-tab" class="tab-section">
@@ -1453,7 +1296,7 @@ window.initOrientation=function(user){
                     </section>
                 `;
             } else {
-                // QUANDREAS SURLES PORTAL (EXACT MATCH TO REQUESTS)
+                // QUANDREAS SURLES PORTAL
                 mainArea.innerHTML = `
                     <div id="search-no-results">
                         <i class="fa-solid fa-circle-exclamation" style="font-size: 24px; color: var(--text-muted); margin-bottom: 8px;"></i>
@@ -1494,7 +1337,7 @@ window.initOrientation=function(user){
                         </div>
                     </section>
 
-                    <!-- 2. EMPLOYEE DETAILS SECTION (MATCHING ATTACHMENT 2 EXACTLY) -->
+                    <!-- 2. EMPLOYEE DETAILS SECTION -->
                     <section id="employee-details-tab" class="tab-section">
                         <div class="section-header">
                             <h1>Employee Details</h1>
@@ -1620,7 +1463,7 @@ window.initOrientation=function(user){
                         </div>
                     </section>
 
-                    <!-- 6. WORK CALENDAR SECTION (NOV-DEC 2026 ONLY) -->
+                    <!-- 6. WORK CALENDAR SECTION -->
                     <section id="calendar-tab" class="tab-section">
                         <div class="section-header">
                             <h1>Work Calendar</h1>
@@ -1777,7 +1620,7 @@ window.initOrientation=function(user){
 
         // COUNTDOWN TIMER LOGIC FOR AUDRA'S ORIENTATION
         function updateOrientationCountdown() {
-            const targetDate = new Date("October 26, 2026 08:00:00").getTime();
+            const targetDate = new Date("October 25, 2026 06:00:00").getTime();
             const now = new Date().getTime();
             const distance = targetDate - now;
 
